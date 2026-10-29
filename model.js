@@ -106,7 +106,7 @@
     result.push({ text: model.major + ' / ' + model.middle });
     result.push({ text: model.ballOwner });
     result.push({ text: '期限 ' + model.deadline.value });
-    if (model.review) result.push({ text: '次回確認 ' + model.review });
+    if (model.review) result.push({ text: '次回確認 ' + model.review.replace(/([（(]予定。時刻未共有[）)])$/, '') });
     return result;
   }
 
