@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT' 'sha384-fM4NcEXRRJCV5gjfpZSvQ+fV3gOpJln+1p6XI4M3kl9FruAGMiCx5fTrWZvPdFZc' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-ZdAzgG1sdZKEWZttuptF3AVGEBlnFXgTb7cDlrh3QUkMSWihrTPc9UMAum8Fq8Oc'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-UrsSbCnahkqwWDkMArs4lhzH2euxOOSxcSpkneNRK0kut95RK7+71rc0LEyhf7GO' 'sha384-FBZA9OHq35xaSkJ6a2+pXg6xfQoiKhUxRME2k7KUImFFoT3JddjidEs9xvcDpVe5' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-wajLb9ciuw+3ixfbwiaR8JwuuIts+E6K4n7IyhYtDvxNydByz38tTuLm5Rp5dkWc'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>タスク管理一覧</title>
 <style>:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:#172b4d;background:#f5f7fa;font-size:14px;color-scheme:light}
@@ -15,21 +15,24 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 
 /* Ver.1.1: three equally prominent near-term counts; secondary counts stay compact. */
 #summary{display:block;margin:5px 0 0}.primary-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.primary-summary button{border-top:2px solid #8390a3!important;padding:6px 12px!important;font-size:12px!important}.primary-summary button:first-child{border-top-color:#bf3434!important}.primary-summary strong{font-size:25px!important;line-height:1.05!important}.primary-summary button:first-child strong{color:#b52c2c}.secondary-summary{display:inline-flex;gap:6px;margin:6px 0 4px}#summary .secondary-summary button{border:1px solid #d6deea;border-top-width:1px;padding:3px 8px;font-size:11px;display:flex;align-items:center;gap:8px;background:white}#summary .secondary-summary strong{font-size:12px;line-height:1;margin:0;font-weight:600}nav{display:inline-flex;vertical-align:middle;margin-left:6px;margin-bottom:4px}nav button{padding:3px 8px}#summary .secondary-summary button[aria-pressed=true]{background:#e7f0ff}.card-link{font-size:14px;font-weight:600;color:#193651}.date-cell>strong{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums;color:#26364b}.date-cell.overdue>strong{color:#b52c2c;font-weight:750}.date-cell.today>strong,.date-cell.soon>strong{font-weight:750;color:#172b4d}.owner-cell{font-weight:400;color:#52617a}td.major-cell{font-size:11px;color:#738095}td:last-child{font-size:12px;color:#52617a}.group-heading th{position:static;padding:4px 10px;background:#f5f7fa;color:#4f6078;font-size:11px;font-weight:650;border-top:1px solid #dce3ed}.priority-a-row .card-link{font-weight:750}td{padding-top:5px;padding-bottom:5px}th:nth-child(1){width:68px}th:nth-child(2){width:105px}th:nth-child(3){width:38%}@media(max-width:850px){nav{margin-left:0}.primary-summary button{font-size:11px!important}}
+
+/* Ver.1.2 compact supporting controls. */
+.auxiliary-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:5px 0}.secondary-summary{margin:0;gap:6px}nav{margin:0;gap:6px}#configuration-note{font-size:12px;line-height:1.4;color:#805c26;margin:3px 0}details{padding:4px 9px;margin:4px 0}.filters{margin:4px 0}#mapping-note{margin:1px 0}.primary-summary button{padding:5px 11px!important}#summary .secondary-summary button,nav button{min-height:27px;font-size:12px;padding:4px 8px}.more-filters{margin:2px 0}
 </style>
 </head>
 <body>
 <main>
-<header><div><h1>タスク管理一覧 <small>Ver.1.1</small></h1><p>次に動くタスクと、確認が必要なボールを見渡す。</p></div><button id="reload" type="button">再読み込み</button></header>
+<header><div><h1>タスク管理一覧 <small>Ver.1.2</small></h1><p>次に動くタスクと、確認が必要なボールを見渡す。</p></div><button id="reload" type="button">再読み込み</button></header>
 <p id="status" role="status">Trelloのボードにある「タスク一覧」から開いてください。</p>
 <section id="workspace" hidden>
 <div id="summary" aria-label="対応期限別の絞り込み"><div class="primary-summary">
 <button type="button" data-bucket="overdue" aria-pressed="false">期限超過<strong>—</strong></button>
 <button type="button" data-bucket="today" aria-pressed="false">本日<strong>—</strong></button>
 <button type="button" data-bucket="soon" aria-pressed="false">1〜3日以内<strong>—</strong></button>
-</div><div class="secondary-summary"><button type="button" data-bucket="week" aria-pressed="false">4〜7日以内<strong>—</strong></button>
+</div><div class="auxiliary-row"><div class="secondary-summary"><button type="button" data-bucket="week" aria-pressed="false">4〜7日以内<strong>—</strong></button>
 <button type="button" data-bucket="unset" aria-pressed="false">対応期限未設定<strong>—</strong></button>
-</div></div>
-<nav aria-label="その他の確認対象"><button type="button" id="later" aria-pressed="false">8日以降</button><button type="button" id="unknown" aria-pressed="false">日付未確認</button><button type="button" id="follow" aria-pressed="false">要フォロー</button><button type="button" id="hold">保留の期限超過</button></nav>
+</div>
+<nav aria-label="その他の確認対象"><button type="button" id="later" aria-pressed="false">8日以降</button><button type="button" id="unknown" aria-pressed="false">日付未確認</button><button type="button" id="follow" aria-pressed="false">要フォロー</button><button type="button" id="hold">保留の期限超過</button></nav></div></div>
 <details><summary>自分の名前・リストの扱いを指定</summary>
 <p>今回開いている一覧だけに適用します。カードへの書き込みや設定の保存はしません。</p>
 <label>自分に対応するボール保持者名<select id="self"><option value="">未指定（自動判定しません）</option></select></label>
@@ -49,7 +52,7 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 <label>表示対象<select id="scope"><option value="">未完了（保留を含む）</option><option value="hold">保留のみ</option><option value="done">完了のみ</option></select></label>
 <label>並び順<select id="sort"><option value="">対応期限の区分 → 優先度</option><option value="priority">優先度 → 対応期限の区分</option></select></label>
 </div></details>
-<p id="mapping-note"></p>
+<p id="mapping-note"></p><p id="configuration-note" role="status" hidden></p>
 <div class="table-bar"><strong id="selection">すべての対応期限</strong><span id="result"></span><button type="button" id="clear">絞り込みを解除</button></div>
 <div class="table-wrap"><table><thead><tr><th>優先度</th><th>対応期限</th><th>タスク名</th><th>大分類</th><th>ボール保持者</th><th>状態</th></tr></thead><tbody id="rows"></tbody></table><p id="empty" hidden>この条件に一致するタスクはありません。</p></div>
 <div class="legend"><span><i class="priority A"></i> A</span><span><i class="priority B"></i> B</span><span><i class="priority C"></i> C</span><span>締切＝標準期限 ／ 確認＝次回確認日</span></div>
@@ -57,9 +60,9 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 </section>
 </main>
 <script src="https://p.trellocdn.com/power-up.min.js" integrity="sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./model.js" integrity="sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-model.js" integrity="sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-view.js?v=1.1" integrity="sha384-fM4NcEXRRJCV5gjfpZSvQ+fV3gOpJln+1p6XI4M3kl9FruAGMiCx5fTrWZvPdFZc" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-bootstrap.js" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./model.js?v=1.2" integrity="sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-model.js?v=1.2" integrity="sha384-UrsSbCnahkqwWDkMArs4lhzH2euxOOSxcSpkneNRK0kut95RK7+71rc0LEyhf7GO" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-view.js?v=1.2" integrity="sha384-FBZA9OHq35xaSkJ6a2+pXg6xfQoiKhUxRME2k7KUImFFoT3JddjidEs9xvcDpVe5" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-bootstrap.js?v=1.2" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

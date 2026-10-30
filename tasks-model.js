@@ -109,5 +109,13 @@
     }
     return counts;
   }
-  return Object.freeze({ rows, filter, sort, summarize, today, bucketNames, actionDate });
+  function collectionView(rows, options) {
+    return { counts: summarize(filter(rows, { ...options, bucket: '' }, false)),
+      visible: sort(filter(rows, options, true), options.sort) };
+  }
+  function configuration(lists, settings) {
+    return { listsReady: lists.every(l => ['active', 'hold', 'done'].includes(settings.listModes?.[l.id])),
+      selfReady: Boolean(settings.self) };
+  }
+  return Object.freeze({ rows, filter, sort, summarize, today, bucketNames, actionDate, collectionView, configuration });
 });
