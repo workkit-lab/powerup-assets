@@ -40,40 +40,12 @@
     return result.value || '未記載';
   }
 
-  function priority(card, description) {
-    const source = field(description, ['元の優先度', '優先度']);
-    const candidates = [];
-    let uncertain = source.conflict;
-    if (source.value) {
-      if (/^[ABC]$/.test(source.value)) candidates.push(source.value);
-      else uncertain = true;
-    }
-    for (const label of card.labels || []) {
-      const match = String(label.name || '').match(/^優先([ABC])$/);
-      if (match) candidates.push(match[1]);
-      else if (/^優先/.test(String(label.name || ''))) uncertain = true;
-    }
-    const unique = [...new Set(candidates)];
-    if (uncertain || unique.length !== 1) return { level: null, color: 'light-gray' };
-    return { level: unique[0], color: { A: 'red', B: 'orange', C: 'green' }[unique[0]] };
-  }
-
-  function deadline(card, description) {
-    const declared = field(description, ['完了期限', '確定期限']);
+  function deadline(card) {
     const stored = card.due && typeof card.due === 'object' ? card.due.date : card.due;
     const date = nativeDate(stored);
-    const fromText = civilDate(declared.value);
-    if (declared.conflict || (stored && !date)) return { value: '要確認', date: null };
-    if (date && fromText && date !== fromText) return { value: '要確認', date: null };
-    if (date && declared.value && !fromText && !/^未設定(?:[（(].*[）)])?$/.test(declared.value)) {
-      return { value: '要確認', date: null };
-    }
+    if (stored && !date) return { value: '要確認', date: null };
     if (date) return { value: date, date: date };
-    if (fromText) return { value: fromText, date: fromText };
-    if (!declared.value || /^未設定(?:[（(].*[）)])?$/.test(declared.value)) {
-      return { value: '未設定', date: null };
-    }
-    return { value: '要確認', date: null };
+    return { value: '未設定', date: null };
   }
 
   function reviewDate(description) {
@@ -95,18 +67,21 @@
         const owner = field(description, ['現在のボール担当者', 'ボール担当者']);
         return owner.conflict || !owner.value ? '要確認' : owner.value;
       })(),
-      priority: priority(card, description),
-      deadline: deadline(card, description),
+      deadline: deadline(card),
       review: reviewDate(description)
     };
   }
 
-  function badges(model, iconUrl) {
-    const result = [{ icon: iconUrl, color: model.priority.color }];
-    result.push({ text: model.major + ' / ' + model.middle });
-    result.push({ text: model.ballOwner });
-    result.push({ text: '期限 ' + model.deadline.value });
-    if (model.review) result.push({ text: '次回確認 ' + model.review.replace(/([（(]予定。時刻未共有[）)])$/, '') });
+  function badges(model) {
+    const result = [{ text: model.major + ' / ' + model.middle }];
+    result.push({ text: '担当：' + model.ballOwner });
+    if (!model.deadline.date) {
+      result.push({ text: model.deadline.value === '未設定' ? '期限未設定' : '期限要確認' });
+    }
+    if (model.review) {
+      const displayDate = /^\d{4}\/\d{2}\/\d{2}/.test(model.review) ? model.review.slice(5, 10) : model.review;
+      result.push({ text: '次回確認：' + displayDate });
+    }
     return result;
   }
 

@@ -12,12 +12,11 @@
         !parsed.pathname.endsWith('/') || parsed.search || parsed.hash) {
       throw new Error('A fixed HTTPS deployment directory without a query or fragment is required.');
     }
-    const iconUrl = new URL('priority-dot.svg', parsed).href;
     return {
       'card-badges': async function (t) {
         try {
-          const card = await t.card('desc', 'labels', 'due');
-          return model.badges(model.fromCard(card), iconUrl);
+          const card = await t.card('desc', 'due');
+          return model.badges(model.fromCard(card));
         } catch (_) {
           return [{ text: '表示を取得できません' }];
         }
