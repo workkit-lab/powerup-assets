@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT' 'sha384-uwGrZzXBQnUG2A10F02LgaN3dMXB5aBXNAXitOyyisqaU5HR3FmgevXBdRw3DbcW' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-j66ui8zVsIzm/MM7BjimiXi3TknPezbQ+Pi0TPWQn0PpvGhMHw5/6oYuSKvC18TU'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>タスク管理一覧</title>
+<style>:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:#172b4d;background:#f5f7fa;font-size:14px;color-scheme:light}
+*{box-sizing:border-box}body{margin:0}main{max-width:1500px;margin:auto;padding:22px 28px}header{display:flex;align-items:center;justify-content:space-between;gap:20px}h1{font-size:22px;margin:0 0 4px}p{margin:6px 0;color:#52617a;line-height:1.6}button,input,select{font:inherit}button{cursor:pointer;border:1px solid #d6deea;background:white;color:#173c70;border-radius:6px;padding:7px 12px}button:hover{background:#edf4ff}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8fb6f4;outline-offset:2px}button:disabled{cursor:default;opacity:.6}#reload{background:#155bd4;color:#fff;border-color:#155bd4;white-space:nowrap}#status{font-size:12px;min-height:24px;margin:12px 0}#summary{display:grid;grid-template-columns:repeat(5,minmax(100px,1fr));gap:10px;margin:8px 0 10px}#summary button{text-align:left;padding:12px 16px;border-top:3px solid #a3b4cf;color:#52617a}#summary button:first-child{border-top-color:#cf3535}#summary button:nth-child(2){border-top-color:#155bd4}#summary strong{display:block;font-size:28px;line-height:1.25;color:#172b4d;margin-top:5px}button[aria-pressed=true]{background:#e7f0ff;border-color:#4d83d8}#summary button[aria-pressed=true]{background:#e7f0ff}nav{display:flex;gap:8px;flex-wrap:wrap}nav button{font-size:12px}details{margin:16px 0;background:#fff;border:1px solid #dce3ed;border-radius:6px;padding:10px 14px}summary{cursor:pointer;font-size:13px}details p{font-size:12px}#list-settings{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#52617a}select,input{padding:7px 9px;border:1px solid #cbd5e2;border-radius:5px;background:#fff;color:#172b4d;min-height:34px}#self{max-width:340px}.filters{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.filters label{flex:1;min-width:125px}.filters label.search{flex:2;min-width:240px}#mapping-note{font-size:12px}.table-bar{display:flex;align-items:center;gap:14px;margin:16px 0 8px}.table-bar strong{font-size:14px}.table-bar span{font-size:12px;color:#63758e}.table-bar button{margin-left:auto;font-size:12px}.table-wrap{overflow-x:auto;border:1px solid #dce3ed;border-radius:8px;background:#fff}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#ecf0f6;color:#52617a;font-size:12px;text-align:left;padding:10px 12px;position:sticky;top:0}td{padding:10px 12px;border-top:1px solid #e9edf3;vertical-align:top;font-size:13px;overflow-wrap:anywhere}th:nth-child(1){width:76px}th:nth-child(2){width:108px}th:nth-child(3){width:37%}th:nth-child(4){width:14%}th:nth-child(5){width:17%}th:nth-child(6){width:15%}td strong{display:block;font-size:14px}td small{display:block;font-size:11px;color:#6a7890;margin-top:3px;line-height:1.5}.card-link{padding:0;border:0;border-radius:2px;background:none;text-align:left;line-height:1.5;font-weight:600;color:#153e77}.card-link:hover{background:none;text-decoration:underline}.owner-cell{font-weight:600}.priority{display:inline-block;width:28px;height:9px;border-radius:3px;vertical-align:middle;background:#d6deea}.priority.A{background:#df4545}.priority.B{background:#e2b70a}.priority.C{background:#39a26b}.priority.check{background:#6d7789}.priority.unset{background:transparent;border:1px dashed #a5b1c2}.overdue{color:#ba2929}.muted{color:#6a7890}.flags{color:#805c26}tr.hold{background:#faf8f3}tr.done{background:#f5f7f9;color:#7c8799}#empty{text-align:center;padding:24px;font-size:14px}footer{font-size:11px;color:#6c7b92;margin-top:12px;line-height:1.7}.legend{margin-top:14px;font-size:12px;color:#52617a}.legend span{margin-right:14px}[hidden]{display:none!important}@media(max-width:850px){main{padding:16px}.major-cell,th:nth-child(4){display:none}table{min-width:760px}#summary{gap:5px}#summary button{padding:10px 8px;font-size:11px}}
+
+main{padding:14px 22px}h1{font-size:20px}header p{font-size:12px;margin:3px 0}#status{margin:5px 0;min-height:18px}#summary button{padding:8px 13px}#summary strong{font-size:24px;margin-top:2px}details{margin:8px 0;padding:8px 12px}.filters{margin:8px 0;gap:8px}.filters label{gap:3px}#mapping-note{margin:3px 0;font-size:11px}.table-bar{margin:10px 0 6px}td{padding:8px 12px}.more-filters .filters{margin-bottom:0}
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>タスク管理一覧 <small>Ver.1</small></h1><p>次に動くタスクと、確認が必要なボールを見渡す。</p></div><button id="reload" type="button">再読み込み</button></header>
+<p id="status" role="status">Trelloのボードにある「タスク一覧」から開いてください。</p>
+<section id="workspace" hidden>
+<div id="summary" aria-label="対応期限別の絞り込み">
+<button type="button" data-bucket="overdue" aria-pressed="false">期限超過<strong>—</strong></button>
+<button type="button" data-bucket="today" aria-pressed="false">本日<strong>—</strong></button>
+<button type="button" data-bucket="soon" aria-pressed="false">1〜3日以内<strong>—</strong></button>
+<button type="button" data-bucket="week" aria-pressed="false">4〜7日以内<strong>—</strong></button>
+<button type="button" data-bucket="unset" aria-pressed="false">対応期限未設定<strong>—</strong></button>
+</div>
+<nav aria-label="その他の確認対象"><button type="button" id="later" aria-pressed="false">8日以降</button><button type="button" id="unknown" aria-pressed="false">日付未確認</button><button type="button" id="follow" aria-pressed="false">要フォロー</button><button type="button" id="hold">保留の期限超過</button></nav>
+<details><summary>自分の名前・リストの扱いを指定</summary>
+<p>今回開いている一覧だけに適用します。カードへの書き込みや設定の保存はしません。</p>
+<label>自分に対応するボール保持者名<select id="self"><option value="">未指定（自動判定しません）</option></select></label>
+<div id="list-settings"></div>
+<p>指定のないリストは進行中。Trelloで完了にしたカードは、リスト指定にかかわらず完了扱いです。</p>
+</details>
+<div class="filters">
+<label class="search">検索<input id="search" type="search" placeholder="タスク名・分類・保持者"></label>
+<label>ボールの区分<select id="ball"><option value="">すべて</option><option id="mine-option" value="mine" disabled>自分のボール</option><option id="others-option" value="others" disabled>他者のボール</option><option value="unknown">ボール未確定</option></select></label>
+<label>ボール保持者<select id="owner"><option value="">すべての保持者</option></select></label>
+<label>優先度<select id="priority"><option value="">すべて</option><option value="A">A（赤）</option><option value="B">B（黄）</option><option value="C">C（緑）</option><option value="unset">未設定</option><option value="check">要確認</option></select></label>
+</div>
+<details class="more-filters"><summary>分類・状態・並び順で絞り込む</summary><div class="filters">
+<label>大分類<select id="major"><option value="">すべての大分類</option></select></label>
+<label>中分類<select id="middle"><option value="">すべての中分類</option></select></label>
+<label>状態（リスト）<select id="list"><option value="">すべての状態</option></select></label>
+<label>表示対象<select id="scope"><option value="">未完了（保留を含む）</option><option value="hold">保留のみ</option><option value="done">完了のみ</option></select></label>
+<label>並び順<select id="sort"><option value="">対応期限の区分 → 優先度</option><option value="priority">優先度 → 対応期限の区分</option></select></label>
+</div></details>
+<p id="mapping-note"></p>
+<div class="table-bar"><strong id="selection">すべての対応期限</strong><span id="result"></span><button type="button" id="clear">絞り込みを解除</button></div>
+<div class="table-wrap"><table><thead><tr><th>優先度</th><th>対応期限</th><th>タスク名</th><th>大分類</th><th>ボール保持者</th><th>状態</th></tr></thead><tbody id="rows"></tbody></table><p id="empty" hidden>この条件に一致するタスクはありません。</p></div>
+<div class="legend"><span><i class="priority A"></i> A</span><span><i class="priority B"></i> B</span><span><i class="priority C"></i> C</span><span>完了＝標準期限 ／ 確認＝次回確認日</span></div>
+<footer>対応期限は、完了期限と明示された次回確認日の早い方。日付にマウスを合わせると元の日付を確認できます。<br>日本時間で判定。上部の件数は、検索・保持者・分類等の条件に合う進行中タスクのみ。完了・保留は通常の期限集計から除外。アーカイブは対象外。<br>要フォロー：ボール未確定・日付未確認、または「自分」を指定したときの他者ボールの確認日到来・完了期限7日以内・確認日なし・日付なし。</footer>
+</section>
+</main>
+<script src="https://p.trellocdn.com/power-up.min.js" integrity="sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./model.js" integrity="sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-model.js" integrity="sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-view.js" integrity="sha384-uwGrZzXBQnUG2A10F02LgaN3dMXB5aBXNAXitOyyisqaU5HR3FmgevXBdRw3DbcW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-bootstrap.js" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>

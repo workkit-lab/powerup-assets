@@ -20,6 +20,16 @@
         } catch (_) {
           return [{ text: '表示を取得できません' }];
         }
+      },
+      'board-buttons': function () {
+        return [{
+          text: 'タスク一覧',
+          condition: 'signedIn',
+          callback: function (t) {
+            return t.modal({ url: new URL('tasks.html', parsed.href).href,
+              fullscreen: true, title: 'タスク管理一覧 Ver.1' });
+          }
+        }];
       }
     };
   }
