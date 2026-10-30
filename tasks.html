@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT' 'sha384-uwGrZzXBQnUG2A10F02LgaN3dMXB5aBXNAXitOyyisqaU5HR3FmgevXBdRw3DbcW' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-eSkyq0+DfKU+cdZeXTNQHAf4K3XVzpZsg66NIZ8NnI+XypMAUrH5C2SzjhxexdyZ'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT' 'sha384-fM4NcEXRRJCV5gjfpZSvQ+fV3gOpJln+1p6XI4M3kl9FruAGMiCx5fTrWZvPdFZc' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-ZdAzgG1sdZKEWZttuptF3AVGEBlnFXgTb7cDlrh3QUkMSWihrTPc9UMAum8Fq8Oc'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>タスク管理一覧</title>
 <style>:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:#172b4d;background:#f5f7fa;font-size:14px;color-scheme:light}
@@ -12,20 +12,23 @@
 main{padding:14px 22px}h1{font-size:20px}header p{font-size:12px;margin:3px 0}#status{margin:5px 0;min-height:18px}#summary button{padding:8px 13px}#summary strong{font-size:24px;margin-top:2px}details{margin:8px 0;padding:8px 12px}.filters{margin:8px 0;gap:8px}.filters label{gap:3px}#mapping-note{margin:3px 0;font-size:11px}.table-bar{margin:10px 0 6px}td{padding:8px 12px}.more-filters .filters{margin-bottom:0}
 /* Compact PC layout: Trello already supplies the modal title. */
 main{padding:8px 18px}header{float:right;display:block}header h1,header p{display:none}#reload{padding:5px 10px;min-height:28px}#status{line-height:28px;min-height:28px;margin:0}#workspace{clear:both}#summary{gap:8px;margin:5px 0 7px}#summary button{padding:5px 11px;font-size:11px}#summary strong{font-size:20px;line-height:1.1;margin-top:2px}nav{gap:6px}nav button{padding:4px 9px;font-size:11px}details{margin:6px 0;padding:5px 10px}summary{font-size:12px}.filters{margin:6px 0;gap:8px}.filters label{gap:2px;font-size:11px}input,select{min-height:28px;padding:4px 7px;font-size:12px}.more-filters{background:transparent;border:0;padding:1px 0;margin:2px 0}#mapping-note{font-size:10px;line-height:1.4;margin:2px 0}.table-bar{margin:5px 0}.table-bar button{padding:4px 9px;font-size:11px}.table-bar strong{font-size:13px}th{padding:6px 10px}td{padding:6px 10px}td strong{font-size:13px}td small{margin-top:1px;font-size:10px}.card-link{line-height:1.4}
+
+/* Ver.1.1: three equally prominent near-term counts; secondary counts stay compact. */
+#summary{display:block;margin:5px 0 0}.primary-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.primary-summary button{border-top:2px solid #8390a3!important;padding:6px 12px!important;font-size:12px!important}.primary-summary button:first-child{border-top-color:#bf3434!important}.primary-summary strong{font-size:25px!important;line-height:1.05!important}.primary-summary button:first-child strong{color:#b52c2c}.secondary-summary{display:inline-flex;gap:6px;margin:6px 0 4px}#summary .secondary-summary button{border:1px solid #d6deea;border-top-width:1px;padding:3px 8px;font-size:11px;display:flex;align-items:center;gap:8px;background:white}#summary .secondary-summary strong{font-size:12px;line-height:1;margin:0;font-weight:600}nav{display:inline-flex;vertical-align:middle;margin-left:6px;margin-bottom:4px}nav button{padding:3px 8px}#summary .secondary-summary button[aria-pressed=true]{background:#e7f0ff}.card-link{font-size:14px;font-weight:600;color:#193651}.date-cell>strong{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums;color:#26364b}.date-cell.overdue>strong{color:#b52c2c;font-weight:750}.date-cell.today>strong,.date-cell.soon>strong{font-weight:750;color:#172b4d}.owner-cell{font-weight:400;color:#52617a}td.major-cell{font-size:11px;color:#738095}td:last-child{font-size:12px;color:#52617a}.group-heading th{position:static;padding:4px 10px;background:#f5f7fa;color:#4f6078;font-size:11px;font-weight:650;border-top:1px solid #dce3ed}.priority-a-row .card-link{font-weight:750}td{padding-top:5px;padding-bottom:5px}th:nth-child(1){width:68px}th:nth-child(2){width:105px}th:nth-child(3){width:38%}@media(max-width:850px){nav{margin-left:0}.primary-summary button{font-size:11px!important}}
 </style>
 </head>
 <body>
 <main>
-<header><div><h1>タスク管理一覧 <small>Ver.1</small></h1><p>次に動くタスクと、確認が必要なボールを見渡す。</p></div><button id="reload" type="button">再読み込み</button></header>
+<header><div><h1>タスク管理一覧 <small>Ver.1.1</small></h1><p>次に動くタスクと、確認が必要なボールを見渡す。</p></div><button id="reload" type="button">再読み込み</button></header>
 <p id="status" role="status">Trelloのボードにある「タスク一覧」から開いてください。</p>
 <section id="workspace" hidden>
-<div id="summary" aria-label="対応期限別の絞り込み">
+<div id="summary" aria-label="対応期限別の絞り込み"><div class="primary-summary">
 <button type="button" data-bucket="overdue" aria-pressed="false">期限超過<strong>—</strong></button>
 <button type="button" data-bucket="today" aria-pressed="false">本日<strong>—</strong></button>
 <button type="button" data-bucket="soon" aria-pressed="false">1〜3日以内<strong>—</strong></button>
-<button type="button" data-bucket="week" aria-pressed="false">4〜7日以内<strong>—</strong></button>
+</div><div class="secondary-summary"><button type="button" data-bucket="week" aria-pressed="false">4〜7日以内<strong>—</strong></button>
 <button type="button" data-bucket="unset" aria-pressed="false">対応期限未設定<strong>—</strong></button>
-</div>
+</div></div>
 <nav aria-label="その他の確認対象"><button type="button" id="later" aria-pressed="false">8日以降</button><button type="button" id="unknown" aria-pressed="false">日付未確認</button><button type="button" id="follow" aria-pressed="false">要フォロー</button><button type="button" id="hold">保留の期限超過</button></nav>
 <details><summary>自分の名前・リストの扱いを指定</summary>
 <p>今回開いている一覧だけに適用します。カードへの書き込みや設定の保存はしません。</p>
@@ -49,14 +52,14 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 <p id="mapping-note"></p>
 <div class="table-bar"><strong id="selection">すべての対応期限</strong><span id="result"></span><button type="button" id="clear">絞り込みを解除</button></div>
 <div class="table-wrap"><table><thead><tr><th>優先度</th><th>対応期限</th><th>タスク名</th><th>大分類</th><th>ボール保持者</th><th>状態</th></tr></thead><tbody id="rows"></tbody></table><p id="empty" hidden>この条件に一致するタスクはありません。</p></div>
-<div class="legend"><span><i class="priority A"></i> A</span><span><i class="priority B"></i> B</span><span><i class="priority C"></i> C</span><span>完了＝標準期限 ／ 確認＝次回確認日</span></div>
+<div class="legend"><span><i class="priority A"></i> A</span><span><i class="priority B"></i> B</span><span><i class="priority C"></i> C</span><span>締切＝標準期限 ／ 確認＝次回確認日</span></div>
 <footer>対応期限は、完了期限と明示された次回確認日の早い方。日付にマウスを合わせると元の日付を確認できます。<br>日本時間で判定。上部の件数は、検索・保持者・分類等の条件に合う進行中タスクのみ。完了・保留は通常の期限集計から除外。アーカイブは対象外。<br>要フォロー：ボール未確定・日付未確認、または「自分」を指定したときの他者ボールの確認日到来・完了期限7日以内・確認日なし・日付なし。</footer>
 </section>
 </main>
 <script src="https://p.trellocdn.com/power-up.min.js" integrity="sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="./model.js" integrity="sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="./tasks-model.js" integrity="sha384-map/qbQVpacScx2jcgzRFeqKeOX6ateuKwsLdWXwDhFdPNcqDjU2xKqJmzJEzIjT" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-view.js" integrity="sha384-uwGrZzXBQnUG2A10F02LgaN3dMXB5aBXNAXitOyyisqaU5HR3FmgevXBdRw3DbcW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-view.js" integrity="sha384-fM4NcEXRRJCV5gjfpZSvQ+fV3gOpJln+1p6XI4M3kl9FruAGMiCx5fTrWZvPdFZc" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="./tasks-bootstrap.js" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
