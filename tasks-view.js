@@ -59,16 +59,29 @@
       el('mapping-note').textContent = settings.self ? '自分のボール：' + settings.self + '（今回の一覧内だけ）' : '自分の名前は未指定です。「自分／他者」は推測しません。';
       el('mine-option').disabled = !settings.self; el('others-option').disabled = !settings.self;
       el('rows').replaceChildren();
+      const grouped = Object.keys(filters).every(key => !filters[key]);
+      let previousGroup = '';
       for (const row of visible) {
-        const tr = node('tr'); tr.className = row.state;
+        if (grouped) {
+          const group = row.state === 'hold' ? '保留（通常の期限集計から除外）' :
+            row.state === 'done' ? '完了' : ['overdue', 'today', 'soon'].includes(row.bucket) ?
+            '優先して確認するタスク · 期限超過／本日／1〜3日以内' : row.bucket === 'week' ?
+            '直近の準備が必要なタスク · 4〜7日以内' : 'その他の管理対象';
+          if (group !== previousGroup) {
+            const heading = node('tr', undefined, 'group-heading'), cell = node('th', group);
+            cell.colSpan = 6; cell.scope = 'colgroup'; heading.appendChild(cell); el('rows').appendChild(heading);
+            previousGroup = group;
+          }
+        }
+        const tr = node('tr'); tr.className = row.state + (row.priority === 'A' ? ' priority-a-row' : '');
         const pr = node('td'), dot = node('span', '', 'priority ' + row.priority);
         dot.setAttribute('role', 'img'); dot.setAttribute('aria-label', '優先度 ' + ({ check: '要確認', unset: '未設定' }[row.priority] || row.priority));
         dot.title = dot.getAttribute('aria-label'); pr.appendChild(dot);
         if (['check', 'unset'].includes(row.priority)) pr.appendChild(node('small', row.priority === 'check' ? '要確認' : '未設定'));
-        const date = node('td');
+        const date = node('td', undefined, 'date-cell ' + (row.state === 'active' ? row.bucket : ''));
         date.appendChild(node('strong', row.action.unknown ? '未確認' : row.action.date ? row.action.date.slice(5) : '未設定',
           row.state === 'active' && row.bucket === 'overdue' ? 'overdue' : ''));
-        if (row.action.date) date.appendChild(node('small', row.action.kind));
+        if (row.action.date) date.appendChild(node('small', row.action.kind.replace(/^完了/, '締切')));
         date.title = '完了期限：' + row.due.value + '\n次回確認日：' + (row.review || '未設定');
         const title = node('td'), button = node('button', row.name, 'card-link');
         button.addEventListener('click', async function () {
@@ -103,7 +116,7 @@
         configure(model.rows(cards, lists, settings, asOf));
         loaded = true; render(); el('workspace').hidden = false;
         el('status').textContent = '取得：' + model.today(asOf) + ' ' + new Intl.DateTimeFormat('ja-JP', {
-          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · 閲覧専用';
+          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.1 · 閲覧専用';
       } catch (_) {
         if (ticket !== version) return;
         cards = []; lists = []; el('status').textContent = '取得できませんでした。0件ではありません。「再読み込み」で再試行してください。';
