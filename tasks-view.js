@@ -39,16 +39,26 @@
         label.appendChild(select); el('list-settings').appendChild(label);
       }
     }
+    function settingsButton(target) {
+      const button = node('button', '設定を開く', 'settings-link');
+      button.type = 'button';
+      button.addEventListener('click', function () {
+        el('task-settings').open = true;
+        const select = target === 'self' ? el('self') : el('list-settings').querySelector('select');
+        if (select) { select.focus(); select.scrollIntoView({ block: 'nearest' }); }
+      });
+      return button;
+    }
     function render() {
       if (!loaded) return;
       const rows = model.rows(cards, lists, settings, asOf);
       const { counts, visible } = model.collectionView(rows, filters);
       const config = model.configuration(lists, settings);
-      const classificationMissing = (filters.bucket === 'holdOverdue' && !config.listsReady) ||
-        ((filters.bucket === 'follow' || ['mine', 'others'].includes(filters.ball)) && (!config.selfReady || !config.listsReady));
-      el('configuration-note').hidden = config.listsReady && config.selfReady;
-      el('configuration-note').textContent = [!config.listsReady ? 'リスト区分が未指定です。未指定リストは暫定で進行中として集計します。保留の正確な件数には全リストの指定が必要です。' : '',
-        !config.selfReady ? '自分の名前が未指定のため、他者ボールのフォロー判定は未確認です。' : ''].filter(Boolean).join(' ');
+      const notice = model.guidance(config, filters, Object.values(settings.listModes).includes('hold'));
+      const classificationMissing = Boolean(notice.message);
+      el('configuration-note').hidden = config.listsReady || classificationMissing;
+      el('configuration-note').textContent = 'リストの扱いが未設定です。未指定分は暫定で進行中として集計します。';
+      if (!el('configuration-note').hidden) el('configuration-note').appendChild(settingsButton('lists'));
       for (const button of el('summary').querySelectorAll('button[data-bucket]')) {
         const key = button.dataset.bucket;
         button.querySelector('strong').textContent = String(counts[key]);
@@ -56,12 +66,13 @@
       }
       el('later').textContent = '8日以降 ' + counts.later;
       el('unknown').textContent = '日付未確認 ' + counts.unknown;
-      el('follow').textContent = '要フォロー ' + (config.listsReady && config.selfReady ? counts.follow : '未確認');
-      el('hold').textContent = '保留の期限超過 ' + (config.listsReady ? counts.holdOverdue : '未確認');
+      el('follow').textContent = '要フォロー：' + (config.listsReady && config.selfReady ? counts.follow + '件' : '要設定');
+      el('hold').textContent = '保留の期限超過：' + (config.listsReady ? counts.holdOverdue + '件' : '要設定');
       for (const key of ['later', 'unknown', 'follow']) el(key).setAttribute('aria-pressed', String(filters.bucket === key));
       el('selection').textContent = filters.bucket === 'follow' ? '要フォロー' : filters.bucket === 'holdOverdue' ? '保留の期限超過' : model.bucketNames[filters.bucket] || 'すべての対応期限';
-      el('result').textContent = classificationMissing ? '分類未確認' : visible.length + '件を表示';
-      el('mapping-note').textContent = settings.self ? '自分のボール：' + settings.self + '（今回の一覧内だけ）' : '自分の名前は未指定です。「自分／他者」は推測しません。';
+      el('result').textContent = classificationMissing ? '要設定' : visible.length + '件を表示';
+      el('mapping-note').hidden = !settings.self;
+      el('mapping-note').textContent = settings.self ? '自分のボール：' + settings.self : '';
       el('mine-option').disabled = !settings.self; el('others-option').disabled = !settings.self;
       el('rows').replaceChildren();
       const grouped = Object.keys(filters).every(key => !filters[key]);
@@ -104,7 +115,8 @@
         tr.append(pr, date, title, major, owner, state); el('rows').appendChild(tr);
       }
       el('empty').hidden = visible.length !== 0 && !classificationMissing;
-      el('empty').textContent = classificationMissing ? '設定が不足しているため正確に分類できません。「自分の名前・リストの扱い」を指定してください。' : '該当タスクはありません。';
+      el('empty').textContent = classificationMissing ? notice.message : '該当するタスクはありません';
+      if (classificationMissing) el('empty').appendChild(settingsButton(notice.target));
     }
     async function load() {
       const ticket = ++version;
@@ -122,7 +134,7 @@
         configure(model.rows(cards, lists, settings, asOf));
         loaded = true; render(); el('workspace').hidden = false;
         el('status').textContent = '取得：' + model.today(asOf) + ' ' + new Intl.DateTimeFormat('ja-JP', {
-          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.2 · 閲覧専用';
+          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.2 案内改善版 · 閲覧専用';
       } catch (_) {
         if (ticket !== version) return;
         cards = []; lists = []; el('status').textContent = '取得できませんでした。0件ではありません。「再読み込み」で再試行してください。';

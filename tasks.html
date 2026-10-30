@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-UrsSbCnahkqwWDkMArs4lhzH2euxOOSxcSpkneNRK0kut95RK7+71rc0LEyhf7GO' 'sha384-FBZA9OHq35xaSkJ6a2+pXg6xfQoiKhUxRME2k7KUImFFoT3JddjidEs9xvcDpVe5' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-wajLb9ciuw+3ixfbwiaR8JwuuIts+E6K4n7IyhYtDvxNydByz38tTuLm5Rp5dkWc'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy' 'sha384-bkPdEAeoBexiqHRxGHrKfHcJGAsGvCAR95DpTQLKpzVY2J6hW27QwJAaTxOs6bKu' 'sha384-ctyZbGfvCqY7E4uOFCJ6SCECgv/uZ/uFWThy9BbXfR2j36fpYWQXbdwJuxtiXdP0' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-1CsA0XonFU+ullFonam2JAXTZfJk8tyFpi1UrZJiuW8jF7u/Wb/VLrnVTefIVWVt'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>タスク管理一覧</title>
 <style>:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:#172b4d;background:#f5f7fa;font-size:14px;color-scheme:light}
@@ -18,6 +18,8 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 
 /* Ver.1.2 compact supporting controls. */
 .auxiliary-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:5px 0}.secondary-summary{margin:0;gap:6px}nav{margin:0;gap:6px}#configuration-note{font-size:12px;line-height:1.4;color:#805c26;margin:3px 0}details{padding:4px 9px;margin:4px 0}.filters{margin:4px 0}#mapping-note{margin:1px 0}.primary-summary button{padding:5px 11px!important}#summary .secondary-summary button,nav button{min-height:27px;font-size:12px;padding:4px 8px}.more-filters{margin:2px 0}
+
+#summary nav button{border:1px solid #d6deea!important;border-radius:6px;font-size:12px}.settings-link{font-size:12px;padding:3px 8px;margin-left:8px}#empty .settings-link{display:inline-block}
 </style>
 </head>
 <body>
@@ -33,7 +35,7 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 <button type="button" data-bucket="unset" aria-pressed="false">対応期限未設定<strong>—</strong></button>
 </div>
 <nav aria-label="その他の確認対象"><button type="button" id="later" aria-pressed="false">8日以降</button><button type="button" id="unknown" aria-pressed="false">日付未確認</button><button type="button" id="follow" aria-pressed="false">要フォロー</button><button type="button" id="hold">保留の期限超過</button></nav></div></div>
-<details><summary>自分の名前・リストの扱いを指定</summary>
+<details id="task-settings"><summary>自分の名前・リストの扱いを指定</summary>
 <p>今回開いている一覧だけに適用します。カードへの書き込みや設定の保存はしません。</p>
 <label>自分に対応するボール保持者名<select id="self"><option value="">未指定（自動判定しません）</option></select></label>
 <div id="list-settings"></div>
@@ -60,9 +62,9 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 </section>
 </main>
 <script src="https://p.trellocdn.com/power-up.min.js" integrity="sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./model.js?v=1.2" integrity="sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-model.js?v=1.2" integrity="sha384-UrsSbCnahkqwWDkMArs4lhzH2euxOOSxcSpkneNRK0kut95RK7+71rc0LEyhf7GO" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-view.js?v=1.2" integrity="sha384-FBZA9OHq35xaSkJ6a2+pXg6xfQoiKhUxRME2k7KUImFFoT3JddjidEs9xvcDpVe5" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-bootstrap.js?v=1.2" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./model.js?v=1.2-guide1" integrity="sha384-u3srK/msmyeB4Nlpwl9bZOa2CVRWIfgEeQZxYb5se7x6XzFemKEG0k81MPiaoRgy" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-model.js?v=1.2-guide1" integrity="sha384-bkPdEAeoBexiqHRxGHrKfHcJGAsGvCAR95DpTQLKpzVY2J6hW27QwJAaTxOs6bKu" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-view.js?v=1.2-guide1" integrity="sha384-ctyZbGfvCqY7E4uOFCJ6SCECgv/uZ/uFWThy9BbXfR2j36fpYWQXbdwJuxtiXdP0" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-bootstrap.js?v=1.2-guide1" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

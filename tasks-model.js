@@ -117,5 +117,15 @@
     return { listsReady: lists.every(l => ['active', 'hold', 'done'].includes(settings.listModes?.[l.id])),
       selfReady: Boolean(settings.self) };
   }
-  return Object.freeze({ rows, filter, sort, summarize, today, bucketNames, actionDate, collectionView, configuration });
+  function guidance(config, options, hasHold) {
+    const hold = options.bucket === 'holdOverdue';
+    const follow = options.bucket === 'follow' || ['mine', 'others'].includes(options.ball);
+    const messages = [];
+    if ((hold || follow) && !config.listsReady) messages.push(hasHold ?
+      'まだ未指定のリストがあります。各リストの扱いを指定してください。' :
+      '保留リストを指定してください。保留以外のリストも進行中・完了に指定してください。');
+    if (follow && !config.selfReady) messages.push('自分の名前を指定してください。');
+    return { message: messages.join(' '), target: !config.listsReady ? 'lists' : 'self' };
+  }
+  return Object.freeze({ rows, filter, sort, summarize, today, bucketNames, actionDate, collectionView, configuration, guidance });
 });
