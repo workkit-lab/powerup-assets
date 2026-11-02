@@ -134,7 +134,7 @@
         configure(model.rows(cards, lists, settings, asOf));
         loaded = true; render(); el('workspace').hidden = false;
         el('status').textContent = '取得：' + model.today(asOf) + ' ' + new Intl.DateTimeFormat('ja-JP', {
-          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.2 案内改善版 · 閲覧専用';
+          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.2 優先度色対応版 · 閲覧専用';
       } catch (_) {
         if (ticket !== version) return;
         cards = []; lists = []; el('status').textContent = '取得できませんでした。0件ではありません。「再読み込み」で再試行してください。';

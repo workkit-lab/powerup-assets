@@ -16,14 +16,13 @@
       month: '2-digit', day: '2-digit' }).format(now);
   }
   function priority(labels) {
-    const values = new Set(); let invalid = false;
-    const names = { '優先A': ['A', 'red'], '優先B': ['B', 'yellow'], '優先C': ['C', 'green'] };
+    const values = new Set();
+    const colors = { red: 'A', yellow: 'B', green: 'C', black: 'check' };
     for (const label of labels || []) {
-      if (label.name === '優先度要確認') invalid = true;
-      const entry = Object.hasOwn(names, label.name) ? names[label.name] : null;
-      if (entry) { values.add(entry[0]); if (label.color !== entry[1]) invalid = true; }
+      const color = String(label.color || '').match(/^(red|yellow|green|black)(?:_light|_dark)?$/);
+      if (color) values.add(colors[color[1]]);
     }
-    return invalid || values.size > 1 ? 'check' : values.size ? [...values][0] : 'unset';
+    return values.has('check') || values.size > 1 ? 'check' : values.size ? [...values][0] : 'unset';
   }
   function actionDate(due, review) {
     if (due.value === '要確認' || review === '要確認') return { date: null, kind: '未確認', unknown: true };
