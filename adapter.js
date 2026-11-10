@@ -23,6 +23,10 @@
       },
       'board-buttons': function () {
         return [{
+          icon: {
+            dark: new URL('task-list-on-dark.svg', parsed.href).href,
+            light: new URL('task-list-on-light.svg', parsed.href).href
+          },
           text: 'タスク一覧',
           condition: 'signedIn',
           callback: function (t) {
