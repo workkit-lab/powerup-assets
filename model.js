@@ -52,7 +52,7 @@
     const result = field(description, ['次回確認日']);
     if (result.conflict) return '要確認';
     if (!result.value || /^未設定/.test(result.value)) return null;
-    const match = result.value.match(/^(\d{4}[-/]\d{1,2}[-/]\d{1,2})([（(]予定。時刻未共有[）)])?$/);
+    const match = result.value.match(/^(\d{4}[-/]\d{1,2}[-/]\d{1,2})(（[^（）()\r\n]*）|\([^（）()\r\n]*\))?$/);
     if (!match || !civilDate(match[1])) return '要確認';
     return civilDate(match[1]) + (match[2] || '');
   }
