@@ -30,7 +30,7 @@
           text: 'タスク一覧',
           condition: 'signedIn',
           callback: function (t) {
-            return t.modal({ url: new URL('tasks.html?v=1.2-dates1', parsed.href).href,
+            return t.modal({ url: new URL('tasks.html?v=1.2-dates2', parsed.href).href,
               fullscreen: true, title: 'タスク管理一覧 Ver.1.2' });
           }
         }];

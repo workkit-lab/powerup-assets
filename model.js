@@ -5,12 +5,15 @@
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
 
-  function field(description, keys) {
-    const values = String(description || '').split(/\r?\n/).flatMap(function (line) {
+  function fieldValues(description, keys) {
+    return String(description || '').split(/\r?\n/).flatMap(function (line) {
       const match = line.trim().match(/^([^：:]+)[：:]\s*(.*)$/);
       return match && keys.includes(match[1].trim()) ? [match[2].trim()] : [];
     });
-    const unique = [...new Set(values)];
+  }
+
+  function field(description, keys) {
+    const unique = [...new Set(fieldValues(description, keys))];
     return { value: unique.length === 1 ? unique[0] : '', conflict: unique.length > 1 };
   }
 
@@ -49,12 +52,16 @@
   }
 
   function reviewDate(description) {
-    const result = field(description, ['次回確認日']);
-    if (result.conflict) return '要確認';
-    if (!result.value || /^未設定/.test(result.value)) return null;
-    const match = result.value.match(/^(\d{4}[-/]\d{1,2}[-/]\d{1,2})(（[^（）()\r\n]*）|\([^（）()\r\n]*\))?$/);
-    if (!match || !civilDate(match[1])) return '要確認';
-    return civilDate(match[1]) + (match[2] || '');
+    const values = fieldValues(description, ['次回確認日']).map(function (value) {
+      // A proposal inside an explicitly undated field is not an agreed review date.
+      if (!value || /^未設定/.test(value) || /^未確定(?:$|[（(])/.test(value)) return null;
+      const match = value.match(/^(\d{4}[-/]\d{1,2}[-/]\d{1,2})(（[^（）()\r\n]*）|\([^（）()\r\n]*\))?[。.]?$/);
+      if (!match || !civilDate(match[1])) return '要確認';
+      return civilDate(match[1]) + (match[2] || '');
+    });
+    // Compare calendar dates rather than explanatory text; retain genuine conflicts.
+    if (values.includes('要確認') || new Set(values.map(value => value && value.slice(0, 10))).size > 1) return '要確認';
+    return values[0] || null;
   }
 
   function fromCard(card) {
