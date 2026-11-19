@@ -21,6 +21,10 @@
       select.value = values.some(v => v[0] === old) ? old : '';
     }
     function distinct(values) { return [...new Set(values)].sort((a, b) => a.localeCompare(b, 'ja')).map(v => [v, v]); }
+    function syncSelf() {
+      settings.self = el('self').value;
+      if (!settings.self && ['mine', 'others'].includes(filters.ball)) { filters.ball = ''; el('ball').value = ''; }
+    }
     function configure(rows) {
       for (const [id, key] of [['owner', 'owner'], ['major', 'major'], ['middle', 'middle']]) {
         options(el(id), distinct(rows.map(r => r[key])), { owner: 'すべての保持者', major: 'すべての大分類', middle: 'すべての中分類' }[id]);
@@ -28,7 +32,7 @@
       }
       options(el('list'), lists.map(l => [l.id, l.name]), 'すべての状態'); filters.list = el('list').value;
       options(el('self'), distinct(rows.filter(r => r.ball !== 'unknown').map(r => r.owner)), '未指定（自動判定しません）');
-      settings.self = el('self').value;
+      syncSelf();
       el('list-settings').replaceChildren();
       for (const list of lists) {
         const label = node('label', list.name), select = node('select');
@@ -49,9 +53,9 @@
       });
       return button;
     }
-    function render() {
+    function render(preparedRows) {
       if (!loaded) return;
-      const rows = model.rows(cards, lists, settings, asOf);
+      const rows = preparedRows || model.rows(cards, lists, settings, asOf);
       const { counts, visible } = model.collectionView(rows, filters);
       const config = model.configuration(lists, settings);
       const notice = model.guidance(config, filters, Object.values(settings.listModes).includes('hold'));
@@ -69,7 +73,10 @@
       el('follow').textContent = '要フォロー：' + (config.listsReady && config.selfReady ? counts.follow + '件' : '要設定');
       el('hold').textContent = '保留の期限超過：' + (config.listsReady ? counts.holdOverdue + '件' : '要設定');
       for (const key of ['later', 'unknown', 'follow']) el(key).setAttribute('aria-pressed', String(filters.bucket === key));
-      el('selection').textContent = filters.bucket === 'follow' ? '要フォロー' : filters.bucket === 'holdOverdue' ? '保留の期限超過' : model.bucketNames[filters.bucket] || 'すべての対応期限';
+      const selection = filters.bucket === 'follow' ? '要フォロー' : filters.bucket === 'holdOverdue' ?
+        '保留の期限超過' : model.bucketNames[filters.bucket] || 'すべての対応期限';
+      const narrowed = Object.entries(filters).some(([key, value]) => key !== 'bucket' && key !== 'sort' && value.trim());
+      el('selection').textContent = selection + (narrowed ? '（絞り込み中）' : '');
       el('result').textContent = classificationMissing ? '要設定' : visible.length + '件を表示';
       el('mapping-note').hidden = !settings.self;
       el('mapping-note').textContent = settings.self ? '自分のボール：' + settings.self : '';
@@ -125,19 +132,22 @@
       let timer;
       try {
         const data = await Promise.race([
-          Promise.all([t.cards('id', 'name', 'desc', 'due', 'dueComplete', 'closed', 'labels', 'idList'), t.lists('id', 'name')]),
+          Promise.all([t.cards('id', 'idShort', 'name', 'desc', 'due', 'dueComplete', 'closed', 'labels', 'idList'), t.lists('id', 'name')]),
           new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Unavailable')), 15000); })
         ]);
         if (ticket !== version) return;
-        const now = new Date(); model.rows(data[0], data[1], settings, now);
+        const now = new Date(), previousSelf = settings.self;
+        const result = model.readRows(data[0], data[1], settings, now);
         cards = data[0]; lists = data[1]; asOf = now;
-        configure(model.rows(cards, lists, settings, asOf));
-        loaded = true; render(); el('workspace').hidden = false;
+        configure(result.rows);
+        loaded = true; render(previousSelf === settings.self ? result.rows : undefined); el('workspace').hidden = false;
         el('status').textContent = '取得：' + model.today(asOf) + ' ' + new Intl.DateTimeFormat('ja-JP', {
-          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.2 優先度色対応版 · 閲覧専用';
+          timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' }).format(asOf) + ' JST · Ver.1.2 優先度色対応版 · 閲覧専用' +
+          (result.skipped ? ' · カード情報不足 ' + result.skipped + '件（表示・集計対象外）' : '');
       } catch (_) {
         if (ticket !== version) return;
-        cards = []; lists = []; el('status').textContent = '取得できませんでした。0件ではありません。「再読み込み」で再試行してください。';
+        loaded = false; cards = []; lists = [];
+        el('status').textContent = '取得できませんでした。0件ではありません。「再読み込み」で再試行してください。';
       } finally { clearTimeout(timer); if (ticket === version) el('reload').disabled = false; }
     }
     for (const id of ['search', 'priority', 'owner', 'ball', 'major', 'middle', 'list', 'scope', 'sort']) {
@@ -148,8 +158,7 @@
       });
     }
     el('self').addEventListener('change', function () {
-      settings.self = el('self').value;
-      if (!settings.self && ['mine', 'others'].includes(filters.ball)) { filters.ball = ''; el('ball').value = ''; }
+      syncSelf();
       render();
     });
     for (const button of el('summary').querySelectorAll('button[data-bucket]')) {

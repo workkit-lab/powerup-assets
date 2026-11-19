@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-shEEjRjy3cGDM/d9IekZzFIjJH1l8TDgyIXCj+H8jlz2GZdzsx1XXf96hbrI8NaX' 'sha384-u1KkWRpfa+sBUBnboX8ulGYC6yXGMe1VkDcZL5SK9NsNaqE8ntQ1MmKVl3hY24Im' 'sha384-eyHTBQQdoJaarEkQghYI87gHPlDD+ZYWSvvkoBHyrGEAuUh7Gp1ngEr5i8kncTSM' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-1CsA0XonFU+ullFonam2JAXTZfJk8tyFpi1UrZJiuW8jF7u/Wb/VLrnVTefIVWVt'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq' 'sha384-D47YGLdz1jMoLZsffwkKk3NzQfyd18v28Bqz8EhPM2J+BhUCUfqhNqRek+ukpCRn' 'sha384-pXk8rke94Sb5L+N3QdMEefwlrkjvEPXeW61DxLswOMe9Is7jDbfgoh2kvGIamsdg' 'sha384-8u7+GurOvzUErwFmilOUMue7NHPWGbFVomQTEdJSVoaHzvqNRstL1imJdcUdEVrg' 'sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW'; style-src 'sha384-1CsA0XonFU+ullFonam2JAXTZfJk8tyFpi1UrZJiuW8jF7u/Wb/VLrnVTefIVWVt'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>タスク管理一覧</title>
 <style>:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:#172b4d;background:#f5f7fa;font-size:14px;color-scheme:light}
@@ -42,7 +42,7 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 <p>指定のないリストは進行中。Trelloで完了にしたカードは、リスト指定にかかわらず完了扱いです。</p>
 </details>
 <div class="filters">
-<label class="search">検索<input id="search" type="search" placeholder="タスク名・分類・保持者"></label>
+<label class="search">検索<input id="search" type="search" placeholder="タスク名・カード番号・分類・保持者"></label>
 <label>ボールの区分<select id="ball"><option value="">すべて</option><option id="mine-option" value="mine" disabled>自分のボール</option><option id="others-option" value="others" disabled>他者のボール</option><option value="unknown">ボール未確定</option></select></label>
 <label>ボール保持者<select id="owner"><option value="">すべての保持者</option></select></label>
 <label>優先度<select id="priority"><option value="">すべて</option><option value="A">A（赤）</option><option value="B">B（黄）</option><option value="C">C（緑）</option><option value="unset">未設定</option><option value="check">要確認</option></select></label>
@@ -62,9 +62,9 @@ main{padding:8px 18px}header{float:right;display:block}header h1,header p{displa
 </section>
 </main>
 <script src="https://p.trellocdn.com/power-up.min.js" integrity="sha384-LibIHP+FB8/v8I1pkMzbrJX5yGPtbe61xbo/ypMQijVSnWixJUcoNoX4xi1YhRyq" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./model.js?v=1.2-dates2" integrity="sha384-shEEjRjy3cGDM/d9IekZzFIjJH1l8TDgyIXCj+H8jlz2GZdzsx1XXf96hbrI8NaX" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-model.js?v=1.2-priority1" integrity="sha384-u1KkWRpfa+sBUBnboX8ulGYC6yXGMe1VkDcZL5SK9NsNaqE8ntQ1MmKVl3hY24Im" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="./tasks-view.js?v=1.2-priority1" integrity="sha384-eyHTBQQdoJaarEkQghYI87gHPlDD+ZYWSvvkoBHyrGEAuUh7Gp1ngEr5i8kncTSM" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./model.js?v=1.2-visibility1" integrity="sha384-D47YGLdz1jMoLZsffwkKk3NzQfyd18v28Bqz8EhPM2J+BhUCUfqhNqRek+ukpCRn" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-model.js?v=1.2-visibility1" integrity="sha384-pXk8rke94Sb5L+N3QdMEefwlrkjvEPXeW61DxLswOMe9Is7jDbfgoh2kvGIamsdg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./tasks-view.js?v=1.2-visibility1" integrity="sha384-8u7+GurOvzUErwFmilOUMue7NHPWGbFVomQTEdJSVoaHzvqNRstL1imJdcUdEVrg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="./tasks-bootstrap.js?v=1.2-priority1" integrity="sha384-rwnVdXF3f6RbN5lsh9jI5rxruC7R8SVc/GuWC9x62DYw4/IzEmP4MBglVJOgvalW" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

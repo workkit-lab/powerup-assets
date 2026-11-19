@@ -16,10 +16,12 @@
       month: '2-digit', day: '2-digit' }).format(now);
   }
   function priority(labels) {
+    if (!Array.isArray(labels)) return 'check';
     const values = new Set();
     const colors = { red: 'A', yellow: 'B', green: 'C', black: 'check' };
-    for (const label of labels || []) {
-      const color = String(label.color || '').match(/^(red|yellow|green|black)(?:_light|_dark)?$/);
+    for (const label of labels) {
+      if (!label || (label.color !== null && typeof label.color !== 'string')) return 'check';
+      const color = label.color?.match(/^(red|yellow|green|black)(?:_light|_dark)?$/);
       if (color) values.add(colors[color[1]]);
     }
     return values.has('check') || values.size > 1 ? 'check' : values.size ? [...values][0] : 'unset';
@@ -37,13 +39,19 @@
     const days = dayNumber(action.date) - dayNumber(currentDay);
     return days < 0 ? 'overdue' : days === 0 ? 'today' : days <= 3 ? 'soon' : days <= 7 ? 'week' : 'later';
   }
-  function rows(cards, lists, settings, now) {
-    if (!Array.isArray(cards) || !Array.isArray(lists) || cards.some(c => !c || typeof c.id !== 'string' ||
-        typeof c.name !== 'string' || !Array.isArray(c.labels)) ||
+  function cardNumber(value) {
+    if (Number.isSafeInteger(value) && value > 0) return String(value);
+    return typeof value === 'string' && /^[1-9]\d*$/.test(value) ? value : '';
+  }
+  function readRows(cards, lists, settings, now) {
+    if (!Array.isArray(cards) || !Array.isArray(lists) ||
         lists.some(l => !l || typeof l.id !== 'string' || typeof l.name !== 'string')) throw new Error('Unavailable data');
+    const usable = cards.filter(c => c && typeof c.id === 'string' && c.id && typeof c.name === 'string');
+    const skipped = cards.length - usable.length;
+    if (skipped && !usable.length) throw new Error('Unavailable data');
     const names = new Map(lists.map(l => [l.id, l.name]));
     const currentDay = today(now);
-    return cards.filter(c => !c.closed).map(function (card) {
+    const rows = usable.filter(c => !c.closed).map(function (card) {
       const m = display.fromCard(card), action = actionDate(m.deadline, m.review);
       const mode = settings.listModes?.[card.idList];
       const done = card.dueComplete === true || card.complete === true || card.due?.complete === true || mode === 'done';
@@ -60,14 +68,17 @@
         if (m.deadline.date && !m.review) flags.push('確認日なし');
         if (!m.deadline.date && !m.review) flags.push('日付なし');
       }
-      return { id: card.id, name: card.name, major: m.major, middle: m.middle, owner: m.ballOwner,
+      return { id: card.id, idShort: cardNumber(card.idShort), name: card.name, major: m.major, middle: m.middle, owner: m.ballOwner,
         listId: card.idList, listName: names.get(card.idList) || '状態未確認', state, ball,
         priority: priority(card.labels), due: m.deadline, review: m.review, action,
         bucket: bucket(action, currentDay), flags, follow: state === 'active' && flags.length > 0 };
     });
+    return { rows, skipped };
   }
+  function rows(cards, lists, settings, now) { return readRows(cards, lists, settings, now).rows; }
   function filter(rows, options, includeBucket) {
     const q = (options.search || '').trim().toLocaleLowerCase('ja');
+    const number = q.normalize('NFKC').match(/^(?:(?:no\.?|#)\s*)?([1-9]\d*)$/)?.[1];
     return rows.filter(r => {
       if (options.scope === 'done' ? r.state !== 'done' : options.scope === 'hold' ? r.state !== 'hold' : r.state === 'done') return false;
       if (options.priority && r.priority !== options.priority) return false;
@@ -76,7 +87,8 @@
       if (options.major && r.major !== options.major) return false;
       if (options.middle && r.middle !== options.middle) return false;
       if (options.list && r.listId !== options.list) return false;
-      if (q && ![r.name, r.major, r.middle, r.owner, r.listName].some(v => v.toLocaleLowerCase('ja').includes(q))) return false;
+      if (q && !(number && r.idShort === number) &&
+          ![r.name, r.major, r.middle, r.owner, r.listName].some(v => v.toLocaleLowerCase('ja').includes(q))) return false;
       if (includeBucket && options.bucket) {
         if (options.bucket === 'follow') return r.follow;
         if (options.bucket === 'holdOverdue') return r.state === 'hold' && r.bucket === 'overdue';
@@ -126,5 +138,5 @@
     if (follow && !config.selfReady) messages.push('自分の名前を指定してください。');
     return { message: messages.join(' '), target: !config.listsReady ? 'lists' : 'self' };
   }
-  return Object.freeze({ rows, filter, sort, summarize, today, bucketNames, actionDate, collectionView, configuration, guidance });
+  return Object.freeze({ rows, readRows, filter, sort, summarize, today, bucketNames, actionDate, collectionView, configuration, guidance });
 });
